@@ -42,18 +42,22 @@ async def chatBot():
         
         chat_history = cl.user_session.get("chat_history")
         
-        chat_history.appen({"role": "user", "message": msg.content})
+        chat_history.append({"role": "user", "content": msg.content})
         
         
         try:        
             
-            response = Runner.run_sync(starting_agent = agent, input=chat_history)
+            response = Runner.run_sync(starting_agent= agent, input=chat_history)
             output = response.final_output
+            
+            await cl.Message(
+                content = output
+            ).send()
+            
         except Exception as e:
-            await cl.Message(content= e).send()
+            await cl.Message(content= e).send() 
             
             
-        await cl.Message(content= output).send()
         
 asyncio.run(chatBot())
         
